@@ -47,7 +47,7 @@ class HeadlessChromeDriver(object):
                     image_filename = os.path.join(self.output_dir, f"diagram_{i+1}.png")
 
                     # Convert the Mermaid diagram to an image using mmdc.
-                    command = f"mmdc -i {mermaid_file.name} -o {image_filename} -b transparent --width 1280"
+                    command = f"mmdc -i {mermaid_file.name} -o {image_filename} -b transparent --width 1280 -p puppeteer-config.json"
                     os.system(command)
 
                     # Replace the Mermaid code with the image in the HTML string.
