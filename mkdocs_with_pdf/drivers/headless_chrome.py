@@ -6,6 +6,7 @@ from subprocess import PIPE, Popen
 from tempfile import NamedTemporaryFile
 import re
 import tempfile
+import time
 
 class HeadlessChromeDriver(object):
     """ 'Headless Chrome' executor """
@@ -58,6 +59,7 @@ class HeadlessChromeDriver(object):
             temp.write(html.encode('utf-8'))
             temp.close()
 
+            time.sleep(5)
             self._logger.info("Rendering on `Headless Chrome`(execute JS).")
             with Popen([self._program_path,
                         '--disable-web-security',
