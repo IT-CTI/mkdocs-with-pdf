@@ -8,15 +8,17 @@ import re
 import tempfile
 import time
 
+
 class HeadlessChromeDriver(object):
-    """ 'Headless Chrome' executor """
+    """'Headless Chrome' executor"""
 
     @classmethod
     def setup(self, program_path: str, logger: Logger):
         if not which(program_path):
             raise RuntimeError(
-                'No such `Headless Chrome` program or not executable'
-                + f': "{program_path}".')
+                "No such `Headless Chrome` program or not executable"
+                + f': "{program_path}".'
+            )
         return self(program_path, logger)
 
     def __init__(self, program_path: str, logger: Logger):
@@ -24,11 +26,11 @@ class HeadlessChromeDriver(object):
         self._logger = logger
 
     def render(self, html: str) -> str:
-        temp = NamedTemporaryFile(delete=False, suffix='.html')
+        temp = NamedTemporaryFile(delete=False, suffix=".html")
         try:
             mermaid_regex = r'<div class="mermaid">(.*?)</div>'
             mermaid_matches = re.findall(mermaid_regex, html, flags=re.DOTALL)
-             # Add a member variable for the output directory.
+            # Add a member variable for the output directory.
             self.output_dir = "./img_out"
 
             # Create the output directory if it does not exist.
@@ -53,30 +55,36 @@ class HeadlessChromeDriver(object):
 
                     # Replace the Mermaid code with the image in the HTML string.
                     image_html = f'<img src="file://{os.path.abspath(image_filename)}" alt="Mermaid diagram {i+1}">'
-                    html = html.replace(f'<div class="mermaid">{mermaid_code}</div>', image_html)
+                    html = html.replace(
+                        f'<div class="mermaid">{mermaid_code}</div>', image_html
+                    )
 
             self._logger.info(html)
-            temp.write(html.encode('utf-8'))
+            temp.write(html.encode("utf-8"))
             temp.close()
 
-            time.sleep(5)
             self._logger.info("Rendering on `Headless Chrome`(execute JS).")
-            with Popen([self._program_path,
-                        '--disable-web-security',
-                        '--no-sandbox',
-                        '--headless',
-                        '--disable-gpu',
-                        '--disable-web-security',
-                        '-–allow-file-access-from-files',
-                        '--run-all-compositor-stages-before-draw',
-                        '--virtual-time-budget=10000',
-                        '--dump-dom',
-                        temp.name], stdout=PIPE) as chrome:
-                return chrome.stdout.read().decode('utf-8')
-
+            with Popen(
+                [
+                    self._program_path,
+                    "--disable-web-security",
+                    "--no-sandbox",
+                    "--headless",
+                    "--disable-gpu",
+                    "--disable-web-security",
+                    "--disable-features=dbus",
+                    "-–allow-file-access-from-files",
+                    "--run-all-compositor-stages-before-draw",
+                    "--virtual-time-budget=10000",
+                    "--dump-dom",
+                    temp.name,
+                ],
+                stdout=PIPE,
+            ) as chrome:
+                return chrome.stdout.read().decode("utf-8")
 
         except Exception as e:
-            self._logger.error(f'Failed to render by JS: {e}')
+            self._logger.error(f"Failed to render by JS: {e}")
         finally:
             os.unlink(temp.name)
 
