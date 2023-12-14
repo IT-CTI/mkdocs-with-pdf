@@ -31,6 +31,8 @@ class HeadlessChromeDriver(object):
             # mermaid_regex = r'<div class="mermaid">(.*?)</div>'
             mermaid_regex = r'<pre class="mermaid"><code>(.*?)</code></pre>'
             mermaid_matches = re.findall(mermaid_regex, html, flags=re.DOTALL)
+            print("!!!!!!!")
+            print(mermaid_matches)
             # Add a member variable for the output directory.
             self.output_dir = "./img_out"
 
