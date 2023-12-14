@@ -31,8 +31,6 @@ class HeadlessChromeDriver(object):
             # mermaid_regex = r'<div class="mermaid">(.*?)</div>'
             mermaid_regex = r'<pre class="mermaid"><code>(.*?)</code></pre>'
             mermaid_matches = re.findall(mermaid_regex, html, flags=re.DOTALL)
-            print("!!!!!!!")
-            print(mermaid_matches)
             # Add a member variable for the output directory.
             self.output_dir = "./img_out"
 
@@ -59,7 +57,8 @@ class HeadlessChromeDriver(object):
                     # Replace the Mermaid code with the image in the HTML string.
                     image_html = f'<img src="file://{os.path.abspath(image_filename)}" alt="Mermaid diagram {i+1}">'
                     html = html.replace(
-                        f'<div class="mermaid">{mermaid_code}</div>', image_html
+                        f'<pre class="mermaid"><code>{mermaid_code}</code></pre>',
+                        image_html,
                     )
 
             self._logger.info(html)
