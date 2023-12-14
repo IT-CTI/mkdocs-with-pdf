@@ -28,7 +28,8 @@ class HeadlessChromeDriver(object):
     def render(self, html: str) -> str:
         temp = NamedTemporaryFile(delete=False, suffix=".html")
         try:
-            mermaid_regex = r'<div class="mermaid">(.*?)</div>'
+            # mermaid_regex = r'<div class="mermaid">(.*?)</div>'
+            mermaid_regex = r'<pre class="mermaid"><code>(.*?)</code></pre>'
             mermaid_matches = re.findall(mermaid_regex, html, flags=re.DOTALL)
             # Add a member variable for the output directory.
             self.output_dir = "./img_out"
@@ -71,7 +72,6 @@ class HeadlessChromeDriver(object):
                     "--no-sandbox",
                     "--headless",
                     "--disable-gpu",
-                    "--disable-web-security",
                     "--disable-features=dbus",
                     "--disable-dev-shm-usage",
                     "--disable-audio-output",
